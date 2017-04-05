@@ -1,4 +1,4 @@
-package src.timetabling;
+package timetabling;
 
 public class Population {
 

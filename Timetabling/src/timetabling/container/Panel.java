@@ -1,4 +1,4 @@
-package src.timetabling.container;
+package timetabling.container;
 
 import java.awt.Container;
 import java.awt.Dimension;

@@ -1,10 +1,10 @@
-package src.timetabling;
+package timetabling;
 
 import java.util.Scanner;
 
 import javax.swing.UIManager;
 
-import src.timetabling.container.Window;
+import timetabling.container.Window;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -17,10 +17,10 @@ public class Main {
         JFrame frame = new JFrame("Timetabling Problem");
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Window janela = new Window();
+        Window windown = new Window();
         
         //Set up the content pane.
-        janela.addComponentsToPane(frame.getContentPane());
+        windown.addComponentsToPane(frame.getContentPane());
  
         //Display the window.
         frame.pack();
