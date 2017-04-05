@@ -1,6 +1,5 @@
 package src.timetabling.container;
 
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -10,46 +9,20 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
+
 
 public class FileChooser extends JPanel  {
 	
 	static private final String newline = "\n";
 	JButton openButton, saveButton;
-    JTextArea log;
 	JFileChooser fc;
-	JPanel middlePanel;
 	
     public FileChooser() {
-    	middlePanel = new JPanel ();
-        middlePanel.setBorder( new TitledBorder ( new EtchedBorder (), "Log" ) );
-        middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
-        
-        
-        //Create the log first, because the action listeners
-        //need to refer to it.
-        
-        Flags.LOG  = new JTextArea(15,20);
-        Flags.LOG.setMargin(new Insets(5,5,5,5));
-        Flags.LOG.setEditable(false);
-        JScrollPane logScrollPane = new JScrollPane(Flags.LOG);
-        
-        logScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        //Add Textarea in to middle panel
-        middlePanel.add ( logScrollPane );
-    	
 
         //Create a file chooser
         fc = new JFileChooser();
@@ -67,24 +40,16 @@ public class FileChooser extends JPanel  {
         //Create the open button.  We use the image from the JLF
         //Graphics Repository (but we extracted it from the jar).
         openButton = new JButton("Open a File...",
-                                 createImageIcon("images/Open16.gif"));
-        //openButton.addActionListener(this);
+                                 createImageIcon("images/open.gif"));
+        openFile(openButton);
  
-        //Create the save button.  We use the image from the JLF
-        //Graphics Repository (but we extracted it from the jar).
+        //Create the save button.
         saveButton = new JButton("Save a File...",
-                                 createImageIcon("images/Save16.gif"));
-        //saveButton.addActionListener(this);
- 
-        //For layout purposes, put the buttons in a separate panel
-        JPanel buttonPanel = new JPanel(); //use FlowLayout
-        buttonPanel.add(openButton);
-        buttonPanel.add(saveButton);
-        
+                                 createImageIcon("images/save.gif"));
+        saveFile(saveButton);
     }
  
-    
-    
+
     /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {
         java.net.URL imgURL = FileChooser.class.getResource(path);
@@ -104,26 +69,85 @@ public class FileChooser extends JPanel  {
     	return openButton;
     }
  
-    public JPanel getPanel(){
-    	return middlePanel;
-    }
-   
   //Handle save button action.
-    public void salvarArquivo(JButton button){  
-  	  button.addActionListener(new ActionListener() {
+    private void saveFile(JButton button){  
+    	  button.addActionListener(new ActionListener() {
 
-        @Override
-        public void actionPerformed(ActionEvent e){}
-        	
-        });
+    	        @Override
+    	        public void actionPerformed(ActionEvent e) {
+    	        	 if (e.getSource() == saveButton) {
+    	                int returnVal = fc.showSaveDialog(FileChooser.this);
+    	                if (returnVal == JFileChooser.APPROVE_OPTION) {
+    	                    File file = fc.getSelectedFile();
+    	                    file = new File( file.toString() + ".txt" );
+    	                    try {
+    	                    	FileWriter fileW = new FileWriter (file,false);//arquivo para escrita
+    	                    	BufferedWriter buffW = new BufferedWriter (fileW);
+    	                    	
+    	                    	//do something
+    	                    	
+    	                    	buffW.close ();
+    	                    	
+    	    					file.createNewFile();
+    	    				} catch (IOException e1) {
+    	    					// TODO Auto-generated catch block
+    	    					e1.printStackTrace();
+    	    				}
+    	                    
+    	                    //This is where a real application would save the file.
+    	                    TextArea.LOG.append("Saving: " + file.getName() + "." + newline);
+    	                } else {
+    	                	TextArea.LOG.append("Save command cancelled by user." + newline);
+    	                }}}
+    	        	
+    	    });
   	  }
         
-    public void openArquivo(JButton button){  
+    private void openFile(JButton button){  
     	  button.addActionListener(new ActionListener() {
 
     		  @Override
-    	        public void actionPerformed(ActionEvent e){}
-    	        	
-    	        });
+    	        public void actionPerformed(ActionEvent e){
+           	  //Handle open button action.
+              if (e.getSource() == openButton) {
+                 
+            	  int returnVal = fc.showOpenDialog(FileChooser.this);
+                  
+                  if (returnVal == JFileChooser.APPROVE_OPTION) {
+                      File file = fc.getSelectedFile();
+                      /*LEITURA*/
+                      FileReader fileR;
+                     
+					try {
+						TextArea.LOG.append("Opening: " + file.getName() + "." + newline);
+						 fileR = new FileReader(file);
+						 BufferedReader buffR = new BufferedReader (fileR);//arquivo buferizado
+						
+						 //do something
+	                      while (buffR.ready())
+	                      {
+	                    	 
+	                    	  String str = buffR.readLine();
+	                    	  TextArea.LOG.append(str + newline);
+	                    	  
+	                      }	                      
+	                      buffR.close ();
+	                      
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}//arquivo para ser lido
+					catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+      
+                  } 
+                  else {
+                	  TextArea.LOG.append("Open command cancelled by user." + newline);
+                  }
+              	}              
+    		  }  
+    	  });
     }
 }

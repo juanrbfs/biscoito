@@ -56,7 +56,17 @@ public class Button {
 		    return button;
 	    }
    
-      
+	 public void limparLog(JButton button, JTextArea log){  
+		  button.addActionListener(new ActionListener() {
+
+		      @Override
+		      public void actionPerformed(ActionEvent e) {
+		    	  log.setText("");
+		      }
+	     
+		  });
+		  
+	 }
 //      public void addLinstener(JButton button){
 //    	  
 //    	  button.addActionListener(new ActionListener() {
